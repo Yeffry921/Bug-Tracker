@@ -1,8 +1,13 @@
 import React from "react";
-import NavBar from "./components/NavBar";
+import { BrowserRouter } from "react-router-dom";
+import BugTracker from "./components/BugTracker";
 
 const App = () => {
-  return <NavBar />;
+  return (
+    <BrowserRouter>
+      <BugTracker />
+    </BrowserRouter>
+  );
 };
 
 export default App;
