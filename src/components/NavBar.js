@@ -1,41 +1,100 @@
-import * as React from 'react';
-import Drawer from '@mui/material/Drawer';
-import Toolbar from '@mui/material/Toolbar';
-import List from '@mui/material/List';
-import Divider from '@mui/material/Divider';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import { mainNavbarItems } from './navbarListItems';
-import { navbarStyles } from './navBarStyles';
-import { useNavigate } from 'react-router-dom'; 
+import React, { useState } from "react";
+import {
+  AppBar,
+  Avatar,
+  Badge,
+  Box,
+  Menu,
+  MenuItem,
+  styled,
+  Toolbar,
+  Typography,
+} from "@mui/material";
 
-const NavBar = () => {
-  const navigate = useNavigate()
+import BugReportIcon from "@mui/icons-material/BugReport";
+import MailIcon from "@mui/icons-material/Mail";
+import NotificationsIcon from "@mui/icons-material/Notifications";
 
+const StyledToolbar = styled(Toolbar)({
+  display: "flex",
+  justifyContent: "space-between",
+});
+
+const Search = styled("div")(({ theme }) => ({
+  backgroundColor: "white",
+  padding: "0 10px",
+  borderRadius: theme.shape.borderRadius,
+  width: "40%",
+}));
+
+const Icons = styled(Box)(({ theme }) => ({
+  display: "none",
+  alignItems: "center",
+  gap: "20px",
+  [theme.breakpoints.up("sm")]: {
+    display: "flex",
+  },
+}));
+
+const UserBox = styled(Box)(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  gap: "10px",
+  [theme.breakpoints.up("sm")]: {
+    display: "none",
+  },
+}));
+
+const Navbar = () => {
+  const [open, setOpen] = useState(false);
   return (
-    <Drawer
-      sx={navbarStyles.drawer}
-      variant="permanent"
-      anchor="left"
-    >
-      <Toolbar />
-      <Divider />
-      <List>
-        {mainNavbarItems.map((item, index) => (
-          <ListItem key={item.id} disablePadding onClick={() => navigate(item.route)}>
-            <ListItemButton>
-              <ListItemIcon sx={navbarStyles.icons}>
-                {item.icon}
-              </ListItemIcon>
-              <ListItemText primary={item.label} sx={navbarStyles.item} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-    </Drawer>
+    <AppBar position="sticky">
+      <StyledToolbar>
+        <Typography variant="h6" sx={{ display: { xs: "none", sm: "block" } }}>
+          Bug Tracker
+        </Typography>
+        <BugReportIcon sx={{ display: { xs: "block", sm: "none" } }} />
+        <Icons>
+          <Badge badgeContent={4} color="error">
+            <MailIcon />
+          </Badge>
+
+          <Badge badgeContent={4} color="error">
+            <NotificationsIcon />
+          </Badge>
+
+          <Avatar
+            sx={{ width: 30, height: 30 }}
+            onClick={() => setOpen(true)}
+          />
+        </Icons>
+        <UserBox onClick={() => setOpen(true)}>
+          <Avatar sx={{ width: 30, height: 30 }} />
+          <Typography variant="span">John</Typography>
+        </UserBox>
+      </StyledToolbar>
+
+      <Menu
+        sx={{ marginTop: 5 }}
+        id="demo-positioned-menu"
+        aria-labelledby="demo-positioned-button"
+        open={open}
+        onClose={() => setOpen(false)}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+      >
+        <MenuItem>Profile</MenuItem>
+        <MenuItem>My account</MenuItem>
+        <MenuItem>Logout</MenuItem>
+      </Menu>
+    </AppBar>
   );
 };
 
-export default NavBar
+export default Navbar;
