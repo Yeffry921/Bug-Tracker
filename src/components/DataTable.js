@@ -12,7 +12,7 @@ const projects = [
   {
     title: "Project Number #1",
     dateCreated: "12/12/21",
-    status: "active",
+    status: "Active",
     deadline: "06/12/22",
     id: 12345,
     bugs: ["bug 1", "bug 2", "bug3"],
@@ -20,7 +20,7 @@ const projects = [
   {
     title: "Project Number #2",
     dateCreated: "12/12/21",
-    status: "on hold",
+    status: "On Hold",
     deadline: "06/12/22",
     id: 12346,
     bugs: ["my bug 1", "my bug 2", "my bug 3"],
@@ -28,7 +28,7 @@ const projects = [
   {
     title: "Project Number #3",
     dateCreated: "12/12/21",
-    status: "in progress",
+    status: "In Progress",
     deadline: "06/12/22",
     id: 1275,
     bugs: [
@@ -51,7 +51,6 @@ const rows = projects.map((project) => {
   return createData(project.title, project.dateCreated, project.status, project.deadline, project.bugs.length, project.id )
 })
 
-console.log(rows)
 
 export default function BasicTable() {
   return (
@@ -74,7 +73,7 @@ export default function BasicTable() {
             >
               <TableCell component="th" scope="row">{row.title}</TableCell>
               <TableCell>
-                <ButtonMenu text={row.status}/>
+                <ButtonMenu status={row.status}/>
               </TableCell>
               <TableCell>{row.created}</TableCell>
               <TableCell>{row.deadline}</TableCell>
