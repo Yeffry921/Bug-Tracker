@@ -8,11 +8,12 @@ import NavPages from "../routes/NavPage";
 
 const BugTracker = () => {
   return (
-    <Box>
+    <Box sx={{height: '100%'}}>
       <Navbar />
       <Stack
         direction="row"
         divider={<Divider orientation="vertical" />}
+        sx={{height: '100%'}}
       >
         <Sidebar />
         <NavPages />
