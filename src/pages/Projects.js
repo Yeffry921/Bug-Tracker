@@ -29,8 +29,8 @@ const Projects = () => {
   };
 
   return (
-    <Box flex={8} p={2}>
-      <Stack justifyContent="space-between" direction="row">
+    <Box flex={8}>
+      <Stack justifyContent="space-between" direction="row" p={2}>
         <Typography variant="h5">Projects</Typography>
 
         <Button variant="contained" onClick={handleClickOpen}>
