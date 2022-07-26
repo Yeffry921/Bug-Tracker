@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useReducer, useState } from "react";
 import { Box, Stack, Typography } from "@mui/material";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
@@ -12,20 +12,66 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 
+const initialState = {
+  projects: [],
+};
+
+const projectReducer = (state, action) => {
+  switch (action.type) {
+    case "ADD_PROJECT": {
+      const newProject = action.payload.newProject;
+      return { projects: [newProject, ...state.projects] };
+    }
+    case "CHANGE_STATUS": {
+      const id = action.payload.id
+      const projects = state.projects.find((project) => project.id === id)
+      
+    }
+
+    default:
+      throw new Error();
+  }
+};
+
 const Projects = () => {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(new Date());
+  const [projectData, dispatch] = useReducer(projectReducer, initialState);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [startDateValue, setStartValue] = useState(new Date());
+  const [dueDateValue, setDueValue] = useState(new Date());
 
   const handleClickOpen = () => {
     setOpen(true);
   };
-
   const handleClose = () => {
     setOpen(false);
+    setTitle("");
+    // setDescription('')
+    setStartValue(new Date());
+    setDueValue(new Date());
   };
 
-  const handleChange = (newValue) => {
-    setValue(newValue);
+  const handleStartValue = (value) => {
+    setStartValue(value);
+  };
+
+  const handleDueValue = (value) => {
+    setDueValue(value);
+  };
+
+  const handleAddProject = () => {
+    const newProject = {
+      title,
+      status: "Active",
+      dateCreated: startDateValue,
+      deadline: dueDateValue,
+      bugs: [],
+      id: Math.random() * 10000,
+    };
+
+    dispatch({ type: "ADD_PROJECT", payload: { newProject } });
+    handleClose();
   };
 
   return (
@@ -51,10 +97,12 @@ const Projects = () => {
                 id="standard-basic"
                 variant="outlined"
                 label="Project Name"
-                sx={{mt: '5px'}}
+                sx={{ mt: "5px" }}
+                value={title}
+                onChange={(event) => setTitle(event.target.value)}
               />
 
-              <TextField
+              {/* <TextField
                 autoFocus
                 margin="dense"
                 id="name"
@@ -64,35 +112,41 @@ const Projects = () => {
                 type="email"
                 fullWidth
                 variant="outlined"
-              />
+                value={description}
+                onChange={(event) => setDescription(event.target.value)}
+              /> */}
 
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DesktopDatePicker
                   label="Start Date"
                   inputFormat="MM/dd/yyyy"
-                  value={value}
-                  onChange={handleChange}
+                  value={startDateValue}
+                  onChange={handleStartValue}
                   renderInput={(params) => <TextField {...params} />}
                 />
 
                 <DesktopDatePicker
                   label="Due Date"
                   inputFormat="MM/dd/yyyy"
-                  value={value}
-                  onChange={handleChange}
+                  value={dueDateValue}
+                  onChange={handleDueValue}
                   renderInput={(params) => <TextField {...params} />}
                 />
               </LocalizationProvider>
             </Stack>
           </DialogContent>
           <DialogActions>
-            <Button variant="contained" onClick={handleClose}>Add</Button>
-            <Button variant="outlined" onClick={handleClose}>Cancel</Button>
+            <Button variant="contained" onClick={handleAddProject}>
+              Add
+            </Button>
+            <Button variant="outlined" onClick={handleClose}>
+              Cancel
+            </Button>
           </DialogActions>
         </Dialog>
       </Stack>
 
-      <DataTable />
+      <DataTable projects={projectData.projects} />
     </Box>
   );
 };
