@@ -8,6 +8,16 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import ButtonMenu from "./ButtonMenu";
 import { Grid } from "@mui/material";
+import { Link } from 'react-router-dom/'
+
+const options = [
+  { name: "Active", color: "#2CC8BA" },
+  { name: "In Progress", color: "#08AEEA" },
+  { name: "On Track", color: "#74CB80" },
+  { name: "On Hold", color: "#FBC11E" },
+  { name: "Planning", color: "#A593FF" },
+  { name: "Cancelled", color: "#F56B62" },
+];
 
 function createData(title, created, status, deadline, bugs, id) {
   return { title, created, status, deadline, bugs, id };
@@ -45,11 +55,13 @@ export default function BasicTable({ projects }) {
                 key={row.id}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
-                <TableCell component="th" scope="row">
-                  {row.title}
+                <TableCell scope="row">
+                  <Link to={`/bugs/${row.id}`}>
+                    {row.title}
+                  </Link>
                 </TableCell>
                 <TableCell>
-                  <ButtonMenu status={row.status} />
+                  <ButtonMenu options={options} status={row.status} />
                 </TableCell>
                 <TableCell>{row.created}</TableCell>
                 <TableCell>{row.deadline}</TableCell>
