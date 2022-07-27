@@ -5,23 +5,16 @@ import MenuItem from "@mui/material/MenuItem";
 import CircleIcon from "@mui/icons-material/Circle";
 import { Typography } from "@mui/material";
 
-const options = [
-  { name: "Active", color: "#2CC8BA" },
-  { name: "In Progress", color: "#08AEEA" },
-  { name: "On Track", color: "#74CB80" },
-  { name: "On Hold", color: "#FBC11E" },
-  { name: "Planning", color: "#A593FF" },
-  { name: "Cancelled", color: "#F56B62" },
-];
 
-const ButtonMenu = ({ status }) => {
+
+const ButtonMenu = ({ status, options }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [currentStatus, setCurrentStatus] = useState(null)
   const [selectedIndex, setSelectedIndex] = useState(null);
   const open = Boolean(anchorEl);
 
   const btnColor = options.filter((option) => option.name === status ? option.name : false)
-
+  console.log(btnColor)
   const handleClickListItem = (event) => {
     setAnchorEl(event.currentTarget);
     console.log('handleCLickList')
