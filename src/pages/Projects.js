@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import { Box, Stack, Typography } from "@mui/material";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
@@ -12,9 +12,13 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 
-const initialState = {
-  projects: [],
-};
+const getInitalState = () => {
+  const projects = localStorage.getItem('projects')
+  return projects ? JSON.parse(projects) : []
+}
+
+const initialState = getInitalState()
+
 
 const projectReducer = (state, action) => {
   switch (action.type) {
@@ -25,7 +29,6 @@ const projectReducer = (state, action) => {
     case "CHANGE_STATUS": {
       const id = action.payload.id
       const projects = state.projects.find((project) => project.id === id)
-      
     }
 
     default:
@@ -37,9 +40,12 @@ const Projects = () => {
   const [open, setOpen] = useState(false);
   const [projectData, dispatch] = useReducer(projectReducer, initialState);
   const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
   const [startDateValue, setStartValue] = useState(new Date());
   const [dueDateValue, setDueValue] = useState(new Date());
+
+  useEffect(() => {
+    localStorage.setItem('projects', JSON.stringify(projectData))
+  }, [projectData])
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -47,7 +53,6 @@ const Projects = () => {
   const handleClose = () => {
     setOpen(false);
     setTitle("");
-    // setDescription('')
     setStartValue(new Date());
     setDueValue(new Date());
   };
@@ -64,10 +69,10 @@ const Projects = () => {
     const newProject = {
       title,
       status: "Active",
-      dateCreated: startDateValue,
-      deadline: dueDateValue,
+      dateCreated: startDateValue.toLocaleDateString(),
+      deadline: dueDateValue.toLocaleDateString(),
       bugs: [],
-      id: Math.random() * 10000,
+      id: Math.floor(Math.random() * 100),
     };
 
     dispatch({ type: "ADD_PROJECT", payload: { newProject } });
