@@ -25,12 +25,11 @@ function createData(title, created, status, deadline, bugs, id) {
 
 export default function BasicTable({ projects }) {
   const rows = projects.map((project) => {
-    console.log(project.dateCreated);
     return createData(
       project.title,
-      project.dateCreated.toLocaleDateString(),
+      project.dateCreated,
       project.status,
-      project.deadline.toLocaleDateString(),
+      project.deadline,
       project.bugs.length,
       project.id
     );
