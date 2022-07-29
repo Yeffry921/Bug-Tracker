@@ -12,13 +12,9 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 
-const getInitalState = () => {
-  const projects = localStorage.getItem('projects')
-  return projects ? JSON.parse(projects) : []
-}
-
-const initialState = getInitalState()
-
+const initialState = {
+  projects: [],
+};
 
 const projectReducer = (state, action) => {
   switch (action.type) {
@@ -26,9 +22,14 @@ const projectReducer = (state, action) => {
       const newProject = action.payload.newProject;
       return { projects: [newProject, ...state.projects] };
     }
-    case "CHANGE_STATUS": {
-      const id = action.payload.id
-      const projects = state.projects.find((project) => project.id === id)
+    // case "CHANGE_STATUS": {
+    //   // const id = action.payload.id;
+    //   // const projects = state.projects.find((project) => project.id === id);
+    //   // console.log(projects);
+    // }
+    case "GET_ALL": {
+      const projectData = action.payload.fetchedProjects;
+      return { projects: projectData };
     }
 
     default:
@@ -44,8 +45,15 @@ const Projects = () => {
   const [dueDateValue, setDueValue] = useState(new Date());
 
   useEffect(() => {
-    localStorage.setItem('projects', JSON.stringify(projectData))
-  }, [projectData])
+    fetch("http://localhost:3001/projects", {
+      method: "GET",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        const fetchedProjects = data.projects;
+        dispatch({ type: "GET_ALL", payload: { fetchedProjects } });
+      });
+  }, []);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -71,13 +79,23 @@ const Projects = () => {
       status: "Active",
       dateCreated: startDateValue.toLocaleDateString(),
       deadline: dueDateValue.toLocaleDateString(),
-      bugs: [],
-      id: Math.floor(Math.random() * 100),
     };
 
-    dispatch({ type: "ADD_PROJECT", payload: { newProject } });
+    fetch("http://localhost:3001/projects", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(newProject),
+    })
+      .then((res) => res.json())
+      .then((newProject) => {
+        dispatch({ type: "ADD_PROJECT", payload: { newProject } });
+      });
+
     handleClose();
   };
+  console.log(projectData);
 
   return (
     <Box flex={8}>
@@ -106,20 +124,6 @@ const Projects = () => {
                 value={title}
                 onChange={(event) => setTitle(event.target.value)}
               />
-
-              {/* <TextField
-                autoFocus
-                margin="dense"
-                id="name"
-                label="Description"
-                maxRows={3}
-                multiline
-                type="email"
-                fullWidth
-                variant="outlined"
-                value={description}
-                onChange={(event) => setDescription(event.target.value)}
-              /> */}
 
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DesktopDatePicker
