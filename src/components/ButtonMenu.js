@@ -5,23 +5,38 @@ import MenuItem from "@mui/material/MenuItem";
 import CircleIcon from "@mui/icons-material/Circle";
 import { Typography } from "@mui/material";
 
-const ButtonMenu = ({ status, options }) => {
+const ButtonMenu = ({ status, options, id }) => {
   const [anchorEl, setAnchorEl] = useState(null);
-  const [currentStatus, setCurrentStatus] = useState(null)
+  const [currentStatus, setCurrentStatus] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(null);
   const open = Boolean(anchorEl);
 
-  const btnColor = options.filter((option) => option.name === status ? option.name : false)
+  const btnColor = options.filter((option) =>
+    option.name === status ? option.name : false
+  );
 
   const handleClickListItem = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
   const handleMenuItemClick = (event, index, option) => {
-    console.log(option)
+    const changedStatus = {
+      status: option.name,
+    };
+
+    fetch(`http://localhost:3001/projects/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(changedStatus),
+      headers: {
+        "Content-type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => console.log(data));
+
     setSelectedIndex(index);
     setAnchorEl(null);
-    setCurrentStatus(option)
+    setCurrentStatus(option);
   };
 
   const handleClose = () => {
@@ -39,8 +54,9 @@ const ButtonMenu = ({ status, options }) => {
         sx={{
           textTransform: "capitalize",
           color: "#FFF",
-          backgroundColor: currentStatus === null ? btnColor[0].color : currentStatus.color,
-          fontSize: '12px',
+          backgroundColor:
+            currentStatus === null ? btnColor[0].color : currentStatus.color,
+          fontSize: "12px",
         }}
       >
         {currentStatus === null ? status : currentStatus.name}
@@ -60,7 +76,6 @@ const ButtonMenu = ({ status, options }) => {
               key={option.color}
               selected={index === selectedIndex}
               onClick={(event) => handleMenuItemClick(event, index, option)}
-            
             >
               <CircleIcon
                 fontSize="small"
