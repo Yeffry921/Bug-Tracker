@@ -19,19 +19,19 @@ const options = [
   { name: "Cancelled", color: "#F56B62" },
 ];
 
-function createData(title, created, status, deadline, bugs, id) {
-  return { title, created, status, deadline, bugs, id };
+function createData(title, created, status, deadline, id) {
+  return { title, created, status, deadline, id };
 }
 
-export default function BasicTable({ projects }) {
+export default function DataTable({ projects }) {
+  console.log(projects)
   const rows = projects.map((project) => {
     return createData(
       project.title,
       project.dateCreated,
       project.status,
       project.deadline,
-      project.bugs.length,
-      project.id
+      project._id
     );
   });
 
@@ -64,7 +64,7 @@ export default function BasicTable({ projects }) {
                 </TableCell>
                 <TableCell>{row.created}</TableCell>
                 <TableCell>{row.deadline}</TableCell>
-                <TableCell>{row.bugs}</TableCell>
+                {/* <TableCell>{row.bugs}</TableCell> */}
               </TableRow>
             ))}
           </TableBody>
