@@ -28,13 +28,12 @@ export default function DataTable({ projects }) {
   const rows = projects.map((project) => {
     return createData(
       project.title,
-      project.dateCreated,
+      new Date(project.dateCreated).toLocaleDateString(),
       project.status,
-      project.deadline,
+      new Date(project.deadline).toLocaleDateString(),
       project._id
     );
   });
-
   return (
     <Grid item xs={12}>
       <TableContainer component={Paper}>
@@ -45,7 +44,7 @@ export default function DataTable({ projects }) {
               <TableCell>Status</TableCell>
               <TableCell>Date-Created</TableCell>
               <TableCell>Deadline</TableCell>
-              <TableCell>Bugs</TableCell>
+              {/* <TableCell>Bugs</TableCell> */}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -60,7 +59,7 @@ export default function DataTable({ projects }) {
                   </Link>
                 </TableCell>
                 <TableCell>
-                  <ButtonMenu options={options} status={row.status} />
+                  <ButtonMenu options={options} status={row.status} id={row.id} />
                 </TableCell>
                 <TableCell>{row.created}</TableCell>
                 <TableCell>{row.deadline}</TableCell>
