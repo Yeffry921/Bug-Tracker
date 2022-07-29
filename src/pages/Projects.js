@@ -12,6 +12,8 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 
+import projectService from "../projectService";
+
 const initialState = {
   projects: [],
 };
@@ -28,7 +30,7 @@ const projectReducer = (state, action) => {
     //   // console.log(projects);
     // }
     case "GET_ALL": {
-      const projectData = action.payload.fetchedProjects;
+      const projectData = action.payload.projects;
       return { projects: projectData };
     }
 
@@ -45,16 +47,11 @@ const Projects = () => {
   const [dueDateValue, setDueValue] = useState(new Date());
 
   useEffect(() => {
-    fetch("http://localhost:3001/projects", {
-      method: "GET",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        const fetchedProjects = data.projects;
-        dispatch({ type: "GET_ALL", payload: { fetchedProjects } });
-      });
+    projectService.getAllProjectData().then((projects) => {
+      dispatch({ type: "GET_ALL", payload: { projects } });
+    });
   }, []);
-
+  
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -72,7 +69,6 @@ const Projects = () => {
   const handleDueValue = (value) => {
     setDueValue(value);
   };
-  console.log(new Date("2022-07-29T17:46:03.161Z"))
 
   const handleAddProject = () => {
     const newProject = {
@@ -95,7 +91,6 @@ const Projects = () => {
 
     handleClose();
   };
-  console.log(projectData);
 
   return (
     <Box flex={8}>
