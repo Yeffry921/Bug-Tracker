@@ -5,8 +5,6 @@ import MenuItem from "@mui/material/MenuItem";
 import CircleIcon from "@mui/icons-material/Circle";
 import { Typography } from "@mui/material";
 
-
-
 const ButtonMenu = ({ status, options }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [currentStatus, setCurrentStatus] = useState(null)
@@ -14,15 +12,13 @@ const ButtonMenu = ({ status, options }) => {
   const open = Boolean(anchorEl);
 
   const btnColor = options.filter((option) => option.name === status ? option.name : false)
-  console.log(btnColor)
+
   const handleClickListItem = (event) => {
     setAnchorEl(event.currentTarget);
-    console.log('handleCLickList')
   };
 
   const handleMenuItemClick = (event, index, option) => {
-    console.log('handleMenuList')
-
+    console.log(option)
     setSelectedIndex(index);
     setAnchorEl(null);
     setCurrentStatus(option)
@@ -61,7 +57,7 @@ const ButtonMenu = ({ status, options }) => {
         {options.map((option, index) => {
           return (
             <MenuItem
-              key={option.name}
+              key={option.color}
               selected={index === selectedIndex}
               onClick={(event) => handleMenuItemClick(event, index, option)}
             
