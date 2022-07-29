@@ -72,15 +72,15 @@ const Projects = () => {
   const handleDueValue = (value) => {
     setDueValue(value);
   };
+  console.log(new Date("2022-07-29T17:46:03.161Z"))
 
   const handleAddProject = () => {
     const newProject = {
       title,
       status: "Active",
-      dateCreated: startDateValue.toLocaleDateString(),
-      deadline: dueDateValue.toLocaleDateString(),
+      dateCreated: startDateValue,
+      deadline: dueDateValue,
     };
-
     fetch("http://localhost:3001/projects", {
       method: "POST",
       headers: {
