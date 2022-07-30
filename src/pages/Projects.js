@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useContext, useEffect, useReducer, useState } from "react";
 import { Box, Stack, Typography } from "@mui/material";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
@@ -14,45 +14,22 @@ import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import CircularProgress from "@mui/material/CircularProgress";
 
 import projectService from "../projectService";
-
-const initialState = {
-  projects: [],
-};
-
-const projectReducer = (state, action) => {
-  switch (action.type) {
-    case "ADD_PROJECT": {
-      const newProject = action.payload.newProject;
-      return { projects: [newProject, ...state.projects] };
-    }
-    // case "CHANGE_STATUS": {
-    //   // const id = action.payload.id;
-    //   // const projects = state.projects.find((project) => project.id === id);
-    //   // console.log(projects);
-    // }
-    case "GET_ALL": {
-      const projectData = action.payload.projects;
-      return { projects: projectData };
-    }
-
-    default:
-      throw new Error();
-  }
-};
+import ProjectContext from "../project-context";
 
 const Projects = () => {
+  const { dispatch, projectData } = useContext(ProjectContext)
   const [open, setOpen] = useState(false);
-  const [projectData, dispatch] = useReducer(projectReducer, initialState);
   const [title, setTitle] = useState("");
   const [startDateValue, setStartValue] = useState(new Date());
   const [dueDateValue, setDueValue] = useState(new Date());
   const [isLoading, setIsLoading] = useState(false);
-
+  
   useEffect(() => {
-    setIsLoading(true)
+    setIsLoading(true);
 
     setTimeout(() => {
       projectService.getAllProjectData().then((projects) => {
+        console.log(projects)
         setIsLoading(false);
         dispatch({ type: "GET_ALL", payload: { projects } });
       });
@@ -78,27 +55,19 @@ const Projects = () => {
   };
 
   const handleAddProject = () => {
-    const newProject = {
+    const addedProject = {
       title,
       status: "Active",
       dateCreated: startDateValue,
       deadline: dueDateValue,
     };
-    fetch("http://localhost:3001/projects", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify(newProject),
-    })
-      .then((res) => res.json())
-      .then((newProject) => {
-        dispatch({ type: "ADD_PROJECT", payload: { newProject } });
-      });
+    projectService.addProjectData(addedProject).then((newProject) => {
+      dispatch({ type: "ADD_PROJECT", payload: { newProject } });
+    });
 
     handleClose();
   };
-
+  console.log(projectData)
   return (
     <Box flex={8}>
       <Stack justifyContent="space-between" direction="row" p={2}>
@@ -158,9 +127,8 @@ const Projects = () => {
       </Stack>
 
       {isLoading ? (
-        <Box sx={{display: 'flex', justifyContent: 'center'}}>
-        <CircularProgress/>
-
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <CircularProgress />
         </Box>
       ) : (
         <DataTable projects={projectData.projects} />
