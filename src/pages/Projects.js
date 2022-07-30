@@ -11,6 +11,7 @@ import TextField from "@mui/material/TextField";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
+import CircularProgress from "@mui/material/CircularProgress";
 
 import projectService from "../projectService";
 
@@ -45,13 +46,19 @@ const Projects = () => {
   const [title, setTitle] = useState("");
   const [startDateValue, setStartValue] = useState(new Date());
   const [dueDateValue, setDueValue] = useState(new Date());
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    projectService.getAllProjectData().then((projects) => {
-      dispatch({ type: "GET_ALL", payload: { projects } });
-    });
+    setIsLoading(true)
+
+    setTimeout(() => {
+      projectService.getAllProjectData().then((projects) => {
+        setIsLoading(false);
+        dispatch({ type: "GET_ALL", payload: { projects } });
+      });
+    }, 2000);
   }, []);
-  
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -150,7 +157,14 @@ const Projects = () => {
         </Dialog>
       </Stack>
 
-      <DataTable projects={projectData.projects} />
+      {isLoading ? (
+        <Box sx={{display: 'flex', justifyContent: 'center'}}>
+        <CircularProgress/>
+
+        </Box>
+      ) : (
+        <DataTable projects={projectData.projects} />
+      )}
     </Box>
   );
 };
