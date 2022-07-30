@@ -1,11 +1,14 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import CircleIcon from "@mui/icons-material/Circle";
 import { Typography } from "@mui/material";
+import projectService from "../projectService";
+import ProjectContext from "../project-context";
 
 const ButtonMenu = ({ status, options, id }) => {
+  const {dispatch} = useContext(ProjectContext)
   const [anchorEl, setAnchorEl] = useState(null);
   const [currentStatus, setCurrentStatus] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(null);
@@ -24,15 +27,9 @@ const ButtonMenu = ({ status, options, id }) => {
       status: option.name,
     };
 
-    fetch(`http://localhost:3001/projects/${id}`, {
-      method: "PUT",
-      body: JSON.stringify(changedStatus),
-      headers: {
-        "Content-type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => console.log(data));
+    projectService.changeProjectStatus(id, changedStatus).then((data) => {
+      dispatch({ type: "CHANGE_STATUS", payload: { data } });
+    });
 
     setSelectedIndex(index);
     setAnchorEl(null);
