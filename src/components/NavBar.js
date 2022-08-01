@@ -20,13 +20,6 @@ const StyledToolbar = styled(Toolbar)({
   justifyContent: "space-between",
 });
 
-const Search = styled("div")(({ theme }) => ({
-  backgroundColor: "white",
-  padding: "0 10px",
-  borderRadius: theme.shape.borderRadius,
-  width: "40%",
-}));
-
 const Icons = styled(Box)(({ theme }) => ({
   display: "none",
   alignItems: "center",
@@ -71,7 +64,7 @@ const Navbar = () => {
         <UserBox onClick={() => setOpen(true)}>
           <Avatar sx={{ width: 30, height: 30 }} />
           <Typography variant="span">John</Typography>
-        </UserBox>
+        </UserBox> 
       </StyledToolbar>
 
       <Menu
