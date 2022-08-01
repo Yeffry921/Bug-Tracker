@@ -19,6 +19,11 @@ const projectReducer = (state, action) => {
       const projectData = action.payload.projects;
       return { projects: projectData };
     }
+    case "DELETE_PROJECT": {
+      const id = action.payload.id
+      const newProjects = [...state.projects].filter((project) => project._id !== id)
+      return { projects: newProjects }
+    }
 
     default:
       throw new Error();
