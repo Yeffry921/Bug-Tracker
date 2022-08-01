@@ -12,9 +12,15 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
-
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogTitle from "@mui/material/DialogTitle";
 import ButtonMenu from "./ButtonMenu";
-import ConfirmDialog from "./ConfirmDialog";
+import projectService from "../projectService";
+import Button from "@mui/material/Button";
+import AlertDialog from "./ConfirmDialog";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
 
 const options = [
   { name: "Active", color: "#2CC8BA" },
@@ -29,9 +35,11 @@ const createData = (title, created, status, deadline, id) => {
   return { title, created, status, deadline, id };
 };
 
-const DataTable = ({ projects }) => {
+const DataTable = ({ projects, onHandleDelete }) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [open, setOpen] = useState(false);
+  const [rowId, setRowId] = useState("");
 
   const rows = projects.map((project) => {
     return createData(
@@ -51,7 +59,18 @@ const DataTable = ({ projects }) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+  const handleOpen = (id) => {
+    setOpen(true);
+    setRowId(id);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
 
+  const handleConfirm = (id) => {
+    onHandleDelete(id)
+    handleClose()
+  };
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
@@ -70,18 +89,20 @@ const DataTable = ({ projects }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {(rowsPerPage > 0
-              ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              : rows
-            ).map((row) => (
+            {rows.map((row) => (
               <TableRow
                 key={row.id}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell scope="row" align="left" sx={{ pl: "5px" }}>
-                  <IconButton aria-label="settings" sx={{ mr: "5px" }}>
+                  <IconButton
+                    onClick={() => handleOpen(row.id)}
+                    aria-label="settings"
+                    sx={{ mr: "5px" }}
+                  >
                     <DeleteIcon fontSize="small" />
                   </IconButton>
+
                   <Link to={`/bugs/${row.id}`}>{row.title}</Link>
                 </TableCell>
                 <TableCell>
@@ -96,6 +117,22 @@ const DataTable = ({ projects }) => {
                 {/* <TableCell>{row.bugs}</TableCell> */}
               </TableRow>
             ))}
+
+            <Dialog
+              open={open}
+              onClose={handleClose}
+              aria-labelledby="alert-dialog-title"
+              aria-describedby="alert-dialog-description"
+            >
+              <DialogTitle id="alert-dialog-title">{"Confirm"}</DialogTitle>
+
+              <DialogActions>
+                <Button onClick={handleClose}>Disagree</Button>
+                <Button onClick={() => handleConfirm(rowId)} autoFocus>
+                  Agree
+                </Button>
+              </DialogActions>
+            </Dialog>
 
             {emptyRows > 0 && (
               <TableRow style={{ height: 53 * emptyRows }}>
