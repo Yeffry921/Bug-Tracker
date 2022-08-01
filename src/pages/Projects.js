@@ -17,19 +17,17 @@ import projectService from "../projectService";
 import ProjectContext from "../project-context";
 
 const Projects = () => {
-  const { dispatch, projectData } = useContext(ProjectContext)
+  const { dispatch, projectData } = useContext(ProjectContext);
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [startDateValue, setStartValue] = useState(new Date());
   const [dueDateValue, setDueValue] = useState(new Date());
   const [isLoading, setIsLoading] = useState(false);
-  
   useEffect(() => {
     setIsLoading(true);
 
     setTimeout(() => {
       projectService.getAllProjectData().then((projects) => {
-        console.log(projects)
         setIsLoading(false);
         dispatch({ type: "GET_ALL", payload: { projects } });
       });
@@ -67,7 +65,14 @@ const Projects = () => {
 
     handleClose();
   };
-  console.log(projectData)
+
+  const handleProjectDelete = (id) => {
+    projectService.deleteProject(id).then((data) => {
+      dispatch({ type: "DELETE_PROJECT", payload: { id } });
+    });
+  };
+  
+
   return (
     <Box flex={8}>
       <Stack justifyContent="space-between" direction="row" p={2}>
@@ -131,7 +136,7 @@ const Projects = () => {
           <CircularProgress />
         </Box>
       ) : (
-        <DataTable projects={projectData.projects} />
+          <DataTable projects={projectData.projects} onHandleDelete={handleProjectDelete} />
       )}
     </Box>
   );
