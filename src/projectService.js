@@ -35,8 +35,21 @@ const changeProjectStatus = async (id, changedStatus) => {
     },
   });
 
+  const response = await data.json();
+  return response;
+};
+
+const deleteProject = async (id) => {
+  const data = await fetch(`http://localhost:3001/projects/${id}`, {
+    method: 'DELETE',
+  })
   const response = await data.json()
   return response
 };
 
-export default { getAllProjectData, addProjectData, changeProjectStatus };
+export default {
+  getAllProjectData,
+  addProjectData,
+  changeProjectStatus,
+  deleteProject,
+};
