@@ -5,7 +5,6 @@ import { Divider, Box } from "@mui/material";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import NavPages from "../routes/NavPage";
-import { ProjectProvider } from "../project-context";
 
 const BugTracker = () => {
   return (
@@ -17,9 +16,7 @@ const BugTracker = () => {
         sx={{ height: "100%" }}
       >
         <Sidebar />
-        <ProjectProvider>
           <NavPages />
-        </ProjectProvider>
       </Stack>
     </Box>
   );
