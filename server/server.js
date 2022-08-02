@@ -20,7 +20,17 @@ const projectSchema = new Schema({
   deadline: { type: Date },
 });
 
-const Projects = mongoose.model("Projects", projectSchema);
+const bugSchema = new Schema({
+  title: String,
+  severity: String,
+  status: String,
+  dateCreated: { type: Date },
+  deadline: { type: Date },
+  related_project_id: String,
+});
+
+const Project = mongoose.model("Project", projectSchema);
+const Bug = mongoose.model("Bug", bugSchema);
 
 mongoose
   .connect(url, connectionParams)
@@ -32,7 +42,7 @@ mongoose
 // READ ALL PROJECTS
 
 app.get("/projects", async (req, res) => {
-  const projects = await Projects.find({});
+  const projects = await Project.find({});
   res.json({ projects });
 });
 
@@ -42,7 +52,7 @@ app.post("/projects", (req, res) => {
   // post project into project DB
   const body = req.body;
 
-  const new_project = new Projects({
+  const new_project = new Project({
     title: body.title,
     status: body.status,
     dateCreated: body.dateCreated,
@@ -63,16 +73,16 @@ app.put("/projects/:id", (req, res) => {
   const id = req.params.id;
   const newStatus = req.body.status;
 
-  Projects.findByIdAndUpdate(id, { status: newStatus }, { new: true }).then(
+  Project.findByIdAndUpdate(id, { status: newStatus }, { new: true }).then(
     (data) => res.json(data)
   );
 });
 
 app.delete("/projects/:id", async (req, res) => {
   const id = req.params.id;
-  Projects.findByIdAndDelete(id).then((data) => {
+  Project.findByIdAndDelete(id).then((data) => {
     res.status(200).json({ message: "Project Deleted" });
-  })  
+  });
 });
 
 // // READ ALL BUGS THAT MATCH PROJECT ID CLICKED
@@ -86,9 +96,27 @@ app.delete("/projects/:id", async (req, res) => {
 
 // // CREATE A NEW BUG AND SAVE TO DB
 
-// app.post('/bugs', (req, res) => {
+app.post("/bugs", (req, res) => {
+  const body = req.body;
 
-// })
+  console.log(body);
+
+  const addBug = new Bug({
+    title: body.title,
+    severity: body.severity,
+    status: body.status,
+    dateCreated: body.dateCreated,
+    deadline: body.deadline,
+    related_project_id: body.related_project,
+  });
+
+  addBug
+    .save()
+    .then((savedDoc) => {
+      res.json(savedDoc);
+    })
+    .catch((err) => console.log("err saving doc"));
+});
 
 app.listen(3001, () => {
   console.log("server is running");
