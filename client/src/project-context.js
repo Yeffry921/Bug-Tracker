@@ -13,16 +13,27 @@ const projectReducer = (state, action) => {
       return { projects: [newProject, ...state.projects] };
     }
     case "CHANGE_STATUS": {
-      console.log('working')
+      const changedProject = action.payload.data;
+
+      const newProjects = [...state.projects].map((project) => {
+        if (project._id !== changedProject._id) {
+          return project;
+        }
+        return changedProject;
+      });
+
+      return { projects: newProjects };
     }
     case "GET_ALL": {
       const projectData = action.payload.projects;
       return { projects: projectData };
     }
     case "DELETE_PROJECT": {
-      const id = action.payload.id
-      const newProjects = [...state.projects].filter((project) => project._id !== id)
-      return { projects: newProjects }
+      const id = action.payload.id;
+      const newProjects = [...state.projects].filter(
+        (project) => project._id !== id
+      );
+      return { projects: newProjects };
     }
 
     default:
@@ -48,4 +59,4 @@ export const ProjectProvider = ({ children }) => {
 //   return context;
 // };
 
-export default ProjectContext
+export default ProjectContext;
