@@ -4,11 +4,11 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import CircleIcon from "@mui/icons-material/Circle";
 import { Typography } from "@mui/material";
-import projectService from "../projectService";
+import projectServices from "../projectServices";
 import ProjectContext from "../project-context";
 
-const ButtonMenu = ({ status, options, id }) => {
-  const {dispatch} = useContext(ProjectContext)
+const ButtonMenu = ({ status, options, id, onGetStatus }) => {
+  const { dispatch } = useContext(ProjectContext);
   const [anchorEl, setAnchorEl] = useState(null);
   const [currentStatus, setCurrentStatus] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(null);
@@ -25,16 +25,14 @@ const ButtonMenu = ({ status, options, id }) => {
   const handleMenuItemClick = (event, index, option) => {
     // event.stopPropagation();
     if (option.name === status) {
-      return
+      return;
     }
     const changedStatus = {
       status: option.name,
     };
 
-    projectService.changeProjectStatus(id, changedStatus).then((data) => {
-      dispatch({ type: "CHANGE_STATUS", payload: { data } });
-    });
-
+    onGetStatus(id, changedStatus)
+   
     setSelectedIndex(index);
     setAnchorEl(null);
     setCurrentStatus(option);
