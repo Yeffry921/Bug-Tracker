@@ -24,10 +24,10 @@ const bugReducer = (state, action) => {
 
     //   return { projects: newProjects };
     // }
-    // case "GET_ALL": {
-    //   const projectData = action.payload.projects;
-    //   return { projects: projectData };
-    // }
+    case "GET_ALL": {
+      const bugData = action.payload.bugs;
+      return { bugs: bugData };
+    }
     // case "DELETE_PROJECT": {
     //   const id = action.payload.id;
     //   const newProjects = [...state.projects].filter(
