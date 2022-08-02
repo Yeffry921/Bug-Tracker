@@ -2,10 +2,10 @@ const url = `http://localhost:3001/`;
 
 // READ ALL DATA SERVICE
 
-const getAllBugData = async () => {
-  const data = await fetch("http://localhost:3001/bugs");
+const getAllBugData = async (id) => {
+  const data = await fetch(`http://localhost:3001/bugs/${id}`);
   const response = await data.json();
-  return response.bugs;
+  return response
 };
 
 // ADD DATA SERVICE
