@@ -32,7 +32,7 @@ const createData = (title, created, status, deadline, id) => {
   return { title, created, status, deadline, id };
 };
 
-const DataTable = ({ projects, onHandleDelete }) => {
+const DataTable = ({ projects, onHandleDelete, onHandleStatus }) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [open, setOpen] = useState(false);
@@ -48,6 +48,9 @@ const DataTable = ({ projects, onHandleDelete }) => {
     );
   });
 
+  const getProjectStatus = (id, status) => {
+    onHandleStatus(id, status)
+  }
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -110,6 +113,7 @@ const DataTable = ({ projects, onHandleDelete }) => {
                     options={options}
                     status={row.status}
                     id={row.id}
+                    onGetStatus={getProjectStatus}
                   />
                 </TableCell>
                 <TableCell>{row.created}</TableCell>
