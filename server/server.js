@@ -94,12 +94,17 @@ app.delete("/projects/:id", async (req, res) => {
 
 // })
 
+// GET ALL BUGS CORRESPONDING TO PROJECT CLICKED
+app.get("/bugs/:id", async (req, res) => {
+  const id = req.params.id;
+  const data = await Bug.find({ related_project_id: { $in: id } })
+  res.json(data)
+});
+
 // // CREATE A NEW BUG AND SAVE TO DB
 
 app.post("/bugs", (req, res) => {
   const body = req.body;
-
-  console.log(body);
 
   const addBug = new Bug({
     title: body.title,
@@ -107,7 +112,7 @@ app.post("/bugs", (req, res) => {
     status: body.status,
     dateCreated: body.dateCreated,
     deadline: body.deadline,
-    related_project_id: body.related_project,
+    related_project_id: body.related_project_id,
   });
 
   addBug
