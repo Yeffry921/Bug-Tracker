@@ -16,6 +16,26 @@ import CircularProgress from "@mui/material/CircularProgress";
 import projectServices from "../projectServices";
 import ProjectContext from "../project-context";
 
+const options = [
+  { name: "Active", color: "#2CC8BA" },
+  { name: "In Progress", color: "#08AEEA" },
+  { name: "On Track", color: "#74CB80" },
+  { name: "On Hold", color: "#FBC11E" },
+  { name: "Planning", color: "#A593FF" },
+  { name: "Cancelled", color: "#F56B62" },
+];
+
+const headCells = [
+  { title: "Project Name", id: 1 },
+  { title: "Status", id: 2 },
+  { title: "Date-Created", id: 3 },
+  { title: "Deadline", id: 4 },
+];
+
+const createData = (title, created, status, deadline, id) => {
+  return { title, created, status, deadline, id };
+};
+
 const Projects = () => {
   const { dispatch, projectData } = useContext(ProjectContext);
   const [open, setOpen] = useState(false);
@@ -34,6 +54,16 @@ const Projects = () => {
       });
     }, 2000);
   }, []);
+
+  const projectModelData = projectData.projects.map((project) => {
+    return createData(
+      project.title,
+      new Date(project.dateCreated).toLocaleDateString(),
+      project.status,
+      new Date(project.deadline).toLocaleDateString(),
+      project._id
+    );
+  });
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -143,9 +173,11 @@ const Projects = () => {
         </Box>
       ) : (
         <DataTable
-          projects={projectData.projects}
-            onHandleDelete={handleProjectDelete}
-            onHandleStatus={handleProjectStatus}
+          data={projectModelData}
+          headCells={headCells}
+          onHandleDelete={handleProjectDelete}
+          onHandleStatus={handleProjectStatus}
+          options={options}
         />
       )}
     </Box>
