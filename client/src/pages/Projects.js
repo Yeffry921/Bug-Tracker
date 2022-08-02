@@ -13,7 +13,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import CircularProgress from "@mui/material/CircularProgress";
 
-import projectServices from "../projectServices";
+import projectServices from "../services/projectServices";
 import ProjectContext from "../project-context";
 
 const options = [
