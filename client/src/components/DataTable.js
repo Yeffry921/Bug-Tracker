@@ -18,39 +18,21 @@ import DialogTitle from "@mui/material/DialogTitle";
 import ButtonMenu from "./ButtonMenu";
 import Button from "@mui/material/Button";
 
-
-const options = [
-  { name: "Active", color: "#2CC8BA" },
-  { name: "In Progress", color: "#08AEEA" },
-  { name: "On Track", color: "#74CB80" },
-  { name: "On Hold", color: "#FBC11E" },
-  { name: "Planning", color: "#A593FF" },
-  { name: "Cancelled", color: "#F56B62" },
-];
-
-const createData = (title, created, status, deadline, id) => {
-  return { title, created, status, deadline, id };
-};
-
-const DataTable = ({ projects, onHandleDelete, onHandleStatus }) => {
+const DataTable = ({
+  data,
+  onHandleDelete,
+  onHandleStatus,
+  options,
+  headCells,
+}) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [open, setOpen] = useState(false);
   const [rowId, setRowId] = useState("");
 
-  const rows = projects.map((project) => {
-    return createData(
-      project.title,
-      new Date(project.dateCreated).toLocaleDateString(),
-      project.status,
-      new Date(project.deadline).toLocaleDateString(),
-      project._id
-    );
-  });
-
-  const getProjectStatus = (id, status) => {
-    onHandleStatus(id, status)
-  }
+  const getStatus = (id, status) => {
+    onHandleStatus(id, status);
+  };
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -71,9 +53,9 @@ const DataTable = ({ projects, onHandleDelete, onHandleStatus }) => {
     onHandleDelete(id);
     handleClose();
   };
-  // Avoid a layout jump when reaching the last page with empty rows.
+  // Avoid a layout jump when reaching the last page with empty data.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
 
   return (
     <Grid item xs={12}>
@@ -81,44 +63,43 @@ const DataTable = ({ projects, onHandleDelete, onHandleStatus }) => {
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>Project Name</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Date-Created</TableCell>
-              <TableCell>Deadline</TableCell>
+              {headCells.map((cell) => {
+                return <TableCell key={cell.id}>{cell.title}</TableCell>;
+              })}
               {/* <TableCell>Bugs</TableCell> */}
             </TableRow>
           </TableHead>
           <TableBody>
             {(rowsPerPage > 0
-              ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              : rows
-            ).map((row) => (
+              ? data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              : data
+            ).map((dataItem) => (
               <TableRow
-                key={row.id}
+                key={dataItem.id}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell scope="row" align="left" sx={{ pl: "5px" }}>
                   <IconButton
-                    onClick={() => handleOpen(row.id)}
+                    onClick={() => handleOpen(dataItem.id)}
                     aria-label="settings"
                     sx={{ mr: "5px" }}
                   >
                     <DeleteIcon fontSize="small" />
                   </IconButton>
 
-                  <Link to={`/bugs/${row.id}`}>{row.title}</Link>
+                  <Link to={`/bugs/${dataItem.id}`}>{dataItem.title}</Link>
                 </TableCell>
                 <TableCell>
                   <ButtonMenu
                     options={options}
-                    status={row.status}
-                    id={row.id}
-                    onGetStatus={getProjectStatus}
+                    status={dataItem.status}
+                    id={dataItem.id}
+                    onGetStatus={getStatus}
                   />
                 </TableCell>
-                <TableCell>{row.created}</TableCell>
-                <TableCell>{row.deadline}</TableCell>
-                {/* <TableCell>{row.bugs}</TableCell> */}
+                <TableCell>{dataItem.created}</TableCell>
+                <TableCell>{dataItem.deadline}</TableCell>
+                {/* <TableCell>{dataItem.bugs}</TableCell> */}
               </TableRow>
             ))}
 
@@ -149,12 +130,12 @@ const DataTable = ({ projects, onHandleDelete, onHandleStatus }) => {
               <TablePagination
                 rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
                 colSpan={3}
-                count={rows.length}
+                count={data.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 SelectProps={{
                   inputProps: {
-                    "aria-label": "rows per page",
+                    "aria-label": "data per page",
                   },
                   native: true,
                 }}
