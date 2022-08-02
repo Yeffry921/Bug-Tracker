@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Box, Stack, Typography } from "@mui/material";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
@@ -10,42 +10,64 @@ import TextField from "@mui/material/TextField";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
-import BugTable from "../components/BugTable";
+import CircularProgress from "@mui/material/CircularProgress";
+import { useParams } from "react-router-dom";
 
-const initialState = {
-  bugs: [
-    {
-      title: "bug #1",
-      severity: "severe",
-      status: "In Progress",
-      dateCreated: "12/12/2034",
-      deadline: "12/12/2035",
-      id: 123456,
-    },
-  ]
-};
+import DataTable from "../components/DataTable";
+import BugContext from "../bug-context";
+import bugServices from "../services/bugServices";
 
-const projectReducer = (state, action) => {
-  switch (action.type) {
-    case "ADD_BUGS": {
-      const newBug = action.payload.newBug;
-      return { bugs: [newBug, ...state.bugs] };
-    }
-    // case "CHANGE_STATUS": {
-    //   const id = action.payload.id
-    //   const projects = state.projects.find((project) => project.id === id)
-    // }
-    default:
-      throw new Error();
-  }
-};
+const options = [
+  { name: "In Progress", color: "#FBC11E" },
+  { name: "On Track", color: "#74CB80" },
+  { name: "Planning", color: "#A593FF" },
+  { name: "Cancelled", color: "#F56B62" },
+  { name: "Open", color: "#08AEEA" },
+];
+
+function createData(title, severity, status, dateCreated, deadline, id) {
+  return { title, severity, status, dateCreated, deadline, id };
+}
+
+const headCells = [
+  { title: "Bug", id: 1 },
+  { title: "Status", id: 2 },
+  { title: "Severity", id: 3 },
+  { title: "Date-Created", id: 4 },
+  { title: "Deadline", id: 5 },
+];
 
 const BugPage = () => {
+  const { dispatch, bugData } = useContext(BugContext);
   const [open, setOpen] = useState(false);
-  const [bugData, dispatch] = useReducer(projectReducer, initialState);
   const [title, setTitle] = useState("");
   const [startDateValue, setStartValue] = useState(new Date());
   const [dueDateValue, setDueValue] = useState(new Date());
+  const [isLoading, setIsLoading] = useState(false);
+  const { id } = useParams();
+
+  // useEffect(() => {
+  //   setIsLoading(true);
+
+  //   setTimeout(() => {
+  //     bugServices.getAllBugData().then((bugs) => {
+  //       setIsLoading(false);
+  //       dispatch({ type: "GET_ALL", payload: { bugs } });
+  //     });
+  //   }, 2000);
+  // }, []);
+
+  const bugModelData = bugData.bugs.map((bug) => {
+    console.log(bug)
+    return createData(
+      bug.title,
+      bug.severity,
+      bug.status,
+      new Date(bug.dateCreated).toLocaleDateString(),
+      new Date(bug.deadline).toLocaleDateString(),
+      bug._id
+    );
+  });
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -65,18 +87,36 @@ const BugPage = () => {
     setDueValue(value);
   };
 
-  const handleAddProject = () => {
-    const newBug = {
+  const handleAddBug = () => {
+    const newBugData = {
       title,
-      status: "Active",
+      status: "In Progress",
+      severity: "Minor",
       dateCreated: startDateValue,
       deadline: dueDateValue,
-      bugs: [],
-      id: Math.random() * 10000,
+      related_project_id: id,
     };
 
-    dispatch({ type: "ADD_BUG", payload: { newBug } });
+    console.log(newBugData)
+    
+    bugServices.addBugData(newBugData).then((newBug) => {
+      console.log(newBug)
+      dispatch({ type: "ADD_BUG", payload: { newBug } });
+    });
+
     handleClose();
+  };
+
+  const handleProjectDelete = (id) => {
+    // projectServices.deleteProject(id).then((data) => {
+    //   dispatch({ type: "DELETE_PROJECT", payload: { id } });
+    // });
+  };
+
+  const handleProjectStatus = (id, changedStatus) => {
+    // projectServices.changeProjectStatus(id, changedStatus).then((data) => {
+    //   dispatch({ type: "CHANGE_STATUS", payload: { data } });
+    // });
   };
 
   return (
@@ -89,37 +129,23 @@ const BugPage = () => {
             variant="span"
             sx={{ display: { xs: "none", sm: "block" } }}
           >
-            Add Bug
+            Add Bugs
           </Typography>
           <AddIcon sx={{ display: { xs: "block", sm: "none" } }} />
         </Button>
 
         <Dialog open={open} onClose={handleClose} fullWidth>
-          <DialogTitle>Add Bug</DialogTitle>
+          <DialogTitle>Add Project</DialogTitle>
           <DialogContent>
             <Stack spacing={3}>
               <TextField
                 id="standard-basic"
                 variant="outlined"
-                label="Project Name"
+                label="Bug Name"
                 sx={{ mt: "5px" }}
                 value={title}
                 onChange={(event) => setTitle(event.target.value)}
               />
-
-              {/* <TextField
-                autoFocus
-                margin="dense"
-                id="name"
-                label="Description"
-                maxRows={3}
-                multiline
-                type="email"
-                fullWidth
-                variant="outlined"
-                value={description}
-                onChange={(event) => setDescription(event.target.value)}
-              /> */}
 
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DesktopDatePicker
@@ -141,7 +167,7 @@ const BugPage = () => {
             </Stack>
           </DialogContent>
           <DialogActions>
-            <Button variant="contained" onClick={handleAddProject}>
+            <Button variant="contained" onClick={handleAddBug}>
               Add
             </Button>
             <Button variant="outlined" onClick={handleClose}>
@@ -151,7 +177,19 @@ const BugPage = () => {
         </Dialog>
       </Stack>
 
-      <BugTable bugs={bugData.bugs} />
+      {isLoading ? (
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <CircularProgress />
+        </Box>
+      ) : (
+        <DataTable
+          data={bugModelData}
+          headCells={headCells}
+          // onHandleDelete={handleProjectDelete}
+          // onHandleStatus={handleProjectStatus}
+          options={options}
+        />
+      )}
     </Box>
   );
 };
