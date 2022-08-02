@@ -46,17 +46,19 @@ const BugPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { id } = useParams();
 
-  // useEffect(() => {
-  //   setIsLoading(true);
+  useEffect(() => {
+    // setIsLoading(true);
 
-  //   setTimeout(() => {
-  //     bugServices.getAllBugData().then((bugs) => {
-  //       setIsLoading(false);
-  //       dispatch({ type: "GET_ALL", payload: { bugs } });
-  //     });
-  //   }, 2000);
-  // }, []);
+    setTimeout(() => {
+      bugServices.getAllBugData(id).then((bugs) => {
+        console.log(bugs)
+        // setIsLoading(false);
+        dispatch({ type: "GET_ALL", payload: { bugs } });
+      });
+    }, 2000);
+  }, []);
 
+  console.log(bugData)
   const bugModelData = bugData.bugs.map((bug) => {
     console.log(bug)
     return createData(
