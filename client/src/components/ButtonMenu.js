@@ -1,14 +1,11 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import CircleIcon from "@mui/icons-material/Circle";
 import { Typography } from "@mui/material";
-import projectServices from "../projectServices";
-import ProjectContext from "../project-context";
 
 const ButtonMenu = ({ status, options, id, onGetStatus }) => {
-  const { dispatch } = useContext(ProjectContext);
   const [anchorEl, setAnchorEl] = useState(null);
   const [currentStatus, setCurrentStatus] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(null);
@@ -31,8 +28,8 @@ const ButtonMenu = ({ status, options, id, onGetStatus }) => {
       status: option.name,
     };
 
-    onGetStatus(id, changedStatus)
-   
+    onGetStatus(id, changedStatus);
+
     setSelectedIndex(index);
     setAnchorEl(null);
     setCurrentStatus(option);
