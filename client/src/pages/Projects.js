@@ -13,7 +13,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import CircularProgress from "@mui/material/CircularProgress";
 
-import projectService from "../projectService";
+import projectServices from "../projectServices";
 import ProjectContext from "../project-context";
 
 const Projects = () => {
@@ -23,12 +23,12 @@ const Projects = () => {
   const [startDateValue, setStartValue] = useState(new Date());
   const [dueDateValue, setDueValue] = useState(new Date());
   const [isLoading, setIsLoading] = useState(false);
-  
+
   useEffect(() => {
     setIsLoading(true);
 
     setTimeout(() => {
-      projectService.getAllProjectData().then((projects) => {
+      projectServices.getAllProjectData().then((projects) => {
         setIsLoading(false);
         dispatch({ type: "GET_ALL", payload: { projects } });
       });
@@ -60,7 +60,7 @@ const Projects = () => {
       dateCreated: startDateValue,
       deadline: dueDateValue,
     };
-    projectService.addProjectData(addedProject).then((newProject) => {
+    projectServices.addProjectData(addedProject).then((newProject) => {
       dispatch({ type: "ADD_PROJECT", payload: { newProject } });
     });
 
@@ -68,12 +68,17 @@ const Projects = () => {
   };
 
   const handleProjectDelete = (id) => {
-    projectService.deleteProject(id).then((data) => {
+    projectServices.deleteProject(id).then((data) => {
       dispatch({ type: "DELETE_PROJECT", payload: { id } });
     });
   };
-  
-  console.log(projectData.projects)
+
+  const handleProjectStatus = (id, changedStatus) => {
+    projectServices.changeProjectStatus(id, changedStatus).then((data) => {
+      dispatch({ type: "CHANGE_STATUS", payload: { data } });
+    });
+  };
+
   return (
     <Box flex={8}>
       <Stack justifyContent="space-between" direction="row" p={2}>
@@ -137,7 +142,11 @@ const Projects = () => {
           <CircularProgress />
         </Box>
       ) : (
-          <DataTable projects={projectData.projects} onHandleDelete={handleProjectDelete} />
+        <DataTable
+          projects={projectData.projects}
+            onHandleDelete={handleProjectDelete}
+            onHandleStatus={handleProjectStatus}
+        />
       )}
     </Box>
   );
