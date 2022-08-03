@@ -85,16 +85,9 @@ app.delete("/projects/:id", async (req, res) => {
   });
 });
 
-// // READ ALL BUGS THAT MATCH PROJECT ID CLICKED
-
-// app.get('/bugs:id', (req, res) => {
-//   const projectId = req.params.id
-
-//   // Search the entire database and return me all bugs that contain this ID
-
-// })
 
 // GET ALL BUGS CORRESPONDING TO PROJECT CLICKED
+
 app.get("/bugs/:id", async (req, res) => {
   const id = req.params.id;
   const data = await Bug.find({ related_project_id: { $in: id } })
@@ -122,6 +115,17 @@ app.post("/bugs", (req, res) => {
     })
     .catch((err) => console.log("err saving doc"));
 });
+
+// UPDATE BUG STATUS
+
+app.put('/bugs/:id', (req, res) => {
+  const id = req.params.id
+  const newStatus = req.body.status;
+
+  Bug.findByIdAndUpdate(id, { status: newStatus }, { new: true }).then(
+    (data) => res.json(data)
+  );
+})
 
 app.listen(3001, () => {
   console.log("server is running");
