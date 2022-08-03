@@ -25,8 +25,8 @@ const options = [
   { name: "Open", color: "#08AEEA" },
 ];
 
-function createData(title, severity, status, dateCreated, deadline, id) {
-  return { title, severity, status, dateCreated, deadline, id };
+function createData(title, severity, status, created, deadline, id) {
+  return { title, severity, status, created, deadline, id };
 }
 
 const headCells = [
@@ -51,16 +51,16 @@ const BugPage = () => {
 
     setTimeout(() => {
       bugServices.getAllBugData(id).then((bugs) => {
-        console.log(bugs)
+        console.log(bugs);
         // setIsLoading(false);
         dispatch({ type: "GET_ALL", payload: { bugs } });
       });
     }, 2000);
   }, []);
 
-  console.log(bugData)
+  console.log(bugData);
   const bugModelData = bugData.bugs.map((bug) => {
-    console.log(bug)
+    console.log(bug);
     return createData(
       bug.title,
       bug.severity,
@@ -99,20 +99,20 @@ const BugPage = () => {
       related_project_id: id,
     };
 
-    console.log(newBugData)
-    
+    console.log(newBugData);
+
     bugServices.addBugData(newBugData).then((newBug) => {
-      console.log(newBug)
+      console.log(newBug);
       dispatch({ type: "ADD_BUG", payload: { newBug } });
     });
 
     handleClose();
   };
 
-  const handleProjectDelete = (id) => {
-    // projectServices.deleteProject(id).then((data) => {
-    //   dispatch({ type: "DELETE_PROJECT", payload: { id } });
-    // });
+  const handleBugDelete = (id) => {
+    bugServices.deleteBug(id).then((data) => {
+      dispatch({ type: "DELETE_BUG", payload: { id } });
+    });
   };
 
   const handleBugStatus = (id, changedStatus) => {
@@ -137,7 +137,7 @@ const BugPage = () => {
         </Button>
 
         <Dialog open={open} onClose={handleClose} fullWidth>
-          <DialogTitle>Add Project</DialogTitle>
+          <DialogTitle>Add Bug</DialogTitle>
           <DialogContent>
             <Stack spacing={3}>
               <TextField
@@ -187,9 +187,10 @@ const BugPage = () => {
         <DataTable
           data={bugModelData}
           headCells={headCells}
-          // onHandleDelete={handleProjectDelete}
+          onHandleDelete={handleBugDelete}
           onHandleStatus={handleBugStatus}
           options={options}
+          type="Bugs"
         />
       )}
     </Box>
