@@ -14,7 +14,7 @@ import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import CircularProgress from "@mui/material/CircularProgress";
 
 import projectServices from "../services/projectServices";
-import ProjectContext from "../project-context";
+import ProjectContext from "../context/project-context";
 
 const options = [
   { name: "Active", color: "#2CC8BA" },
