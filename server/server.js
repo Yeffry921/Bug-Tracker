@@ -130,3 +130,11 @@ app.put('/bugs/:id', (req, res) => {
 app.listen(3001, () => {
   console.log("server is running");
 });
+
+app.delete("/bugs/:id", async (req, res) => {
+  const id = req.params.id;
+  
+  Bug.findByIdAndDelete(id).then((data) => {
+    res.status(200).json({ message: "Bug Deleted" });
+  });
+});
