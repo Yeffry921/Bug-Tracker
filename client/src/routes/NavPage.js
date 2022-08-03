@@ -1,8 +1,9 @@
 import { Route, Routes } from "react-router-dom";
-import { BugProvider } from "../bug-context";
 import BugPage from "../pages/BugPage";
 import Projects from "../pages/Projects";
-import { ProjectProvider } from "../project-context";
+
+import { ProjectProvider } from "../context/project-context";
+import { BugProvider } from "../context/bug-context";
 
 const NavPages = () => {
   return (
