@@ -30,13 +30,13 @@ const bugReducer = (state, action) => {
       const bugData = action.payload.bugs;
       return { bugs: bugData };
     }
-    // case "DELETE_PROJECT": {
-    //   const id = action.payload.id;
-    //   const newProjects = [...state.projects].filter(
-    //     (project) => project._id !== id
-    //   );
-    //   return { projects: newProjects };
-    // }
+    case "DELETE_BUG": {
+      const id = action.payload.id;
+      const newBugs = [...state.bugs].filter(
+        (bug) => bug._id !== id
+      );
+      return { bugs : newBugs };
+    }
 
     default:
       throw new Error();
