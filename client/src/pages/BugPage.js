@@ -14,7 +14,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { useParams } from "react-router-dom";
 
 import DataTable from "../components/DataTable";
-import BugContext from "../bug-context";
+import BugContext from "../context/bug-context";
 import bugServices from "../services/bugServices";
 
 const options = [
@@ -115,10 +115,10 @@ const BugPage = () => {
     // });
   };
 
-  const handleProjectStatus = (id, changedStatus) => {
-    // projectServices.changeProjectStatus(id, changedStatus).then((data) => {
-    //   dispatch({ type: "CHANGE_STATUS", payload: { data } });
-    // });
+  const handleBugStatus = (id, changedStatus) => {
+    bugServices.changeBugStatus(id, changedStatus).then((data) => {
+      dispatch({ type: "CHANGE_STATUS", payload: { data } });
+    });
   };
 
   return (
@@ -188,7 +188,7 @@ const BugPage = () => {
           data={bugModelData}
           headCells={headCells}
           // onHandleDelete={handleProjectDelete}
-          // onHandleStatus={handleProjectStatus}
+          onHandleStatus={handleBugStatus}
           options={options}
         />
       )}
