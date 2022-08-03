@@ -12,18 +12,20 @@ const bugReducer = (state, action) => {
       const newBug = action.payload.newBug;
       return { bugs: [newBug, ...state.bugs] };
     }
-    // case "CHANGE_STATUS": {
-    //   const changedBug = action.payload.data;
 
-    //   const newProjects = [...state.projects].map((project) => {
-    //     if (project._id !== changedBug._id) {
-    //       return project;
-    //     }
-    //     return changedBug;
-    //   });
+    case "CHANGE_STATUS": {
+      const changedBug = action.payload.data;
 
-    //   return { projects: newProjects };
-    // }
+      const newBugs = [...state.bugs].map((bugItem) => {
+        if (bugItem._id !== changedBug._id) {
+          return bugItem;
+        }
+        return changedBug;
+      });
+
+      return { bugs: newBugs };
+    }
+
     case "GET_ALL": {
       const bugData = action.payload.bugs;
       return { bugs: bugData };
@@ -45,9 +47,7 @@ export const BugProvider = ({ children }) => {
   const [bugData, dispatch] = useReducer(bugReducer, initialState);
   const value = { bugData, dispatch };
 
-  return (
-    <BugContext.Provider value={value}>{children}</BugContext.Provider>
-  );
+  return <BugContext.Provider value={value}>{children}</BugContext.Provider>;
 };
 
 // const useProjects = () => {
