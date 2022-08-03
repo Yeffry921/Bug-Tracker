@@ -57,6 +57,12 @@ const DataTable = ({
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
 
+  const renderData =
+    rowsPerPage > 0
+      ? data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+      : data;
+
+  console.log(renderData);
   return (
     <Grid item xs={12}>
       <TableContainer component={Paper}>
@@ -70,10 +76,7 @@ const DataTable = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {(rowsPerPage > 0
-              ? data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              : data
-            ).map((dataItem) => (
+            {renderData.map((dataItem) => (
               <TableRow
                 key={dataItem.id}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -87,7 +90,11 @@ const DataTable = ({
                     <DeleteIcon fontSize="small" />
                   </IconButton>
 
-                  <Link to={`/bugs/${dataItem.id}`}>{dataItem.title}</Link>
+                  {dataItem.severity ? (
+                    dataItem.title
+                  ) : (
+                    <Link to={`/bugs/${dataItem.id}`}>{dataItem.title}</Link>
+                  )}
                 </TableCell>
                 <TableCell>
                   <ButtonMenu
@@ -97,9 +104,11 @@ const DataTable = ({
                     onGetStatus={getStatus}
                   />
                 </TableCell>
+                {dataItem.severity && (
+                  <TableCell>{dataItem.severity}</TableCell>
+                )}
                 <TableCell>{dataItem.created}</TableCell>
                 <TableCell>{dataItem.deadline}</TableCell>
-                {/* <TableCell>{dataItem.bugs}</TableCell> */}
               </TableRow>
             ))}
 
