@@ -2,8 +2,8 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
-const { Schema } = mongoose;
 const url = `mongodb+srv://yeffry921:Rs8XfzjK1exwSul4@bug-cluster.elbafr3.mongodb.net/?retryWrites=true&w=majority`;
+const Project = require('./models/project')
 
 app.use(cors());
 app.use(express.json());
@@ -13,24 +13,7 @@ const connectionParams = {
   useUnifiedTopology: true,
 };
 
-const projectSchema = new Schema({
-  title: String,
-  status: String,
-  dateCreated: { type: Date },
-  deadline: { type: Date },
-});
 
-const bugSchema = new Schema({
-  title: String,
-  severity: String,
-  status: String,
-  dateCreated: { type: Date },
-  deadline: { type: Date },
-  related_project_id: String,
-});
-
-const Project = mongoose.model("Project", projectSchema);
-const Bug = mongoose.model("Bug", bugSchema);
 
 mongoose
   .connect(url, connectionParams)
@@ -127,9 +110,7 @@ app.put('/bugs/:id', (req, res) => {
   );
 })
 
-app.listen(3001, () => {
-  console.log("server is running");
-});
+// DELETE BUGS
 
 app.delete("/bugs/:id", async (req, res) => {
   const id = req.params.id;
@@ -137,4 +118,8 @@ app.delete("/bugs/:id", async (req, res) => {
   Bug.findByIdAndDelete(id).then((data) => {
     res.status(200).json({ message: "Bug Deleted" });
   });
+});
+
+app.listen(3001, () => {
+  console.log("server is running");
 });
