@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer } from "react";
+import { createContext, useReducer } from "react";
 
 const BugContext = createContext();
 
@@ -30,6 +30,7 @@ const bugReducer = (state, action) => {
       const bugData = action.payload.bugs;
       return { bugs: bugData };
     }
+      
     case "DELETE_BUG": {
       const id = action.payload.id;
       const newBugs = [...state.bugs].filter(
