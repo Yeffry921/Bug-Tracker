@@ -6,7 +6,6 @@ import Projects from "../pages/Projects";
 import { ProjectProvider } from "../context/project-context";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
-import NavPages from "../routes/NavPage";
 
 const BugTracker = () => {
   return (
