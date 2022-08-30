@@ -93,7 +93,7 @@ const DataTable = ({
                   {dataItem.severity ? (
                     dataItem.title
                   ) : (
-                    <Link to={`/bugs/${dataItem.id}`}>{dataItem.title}</Link>
+                    <Link to={`/home/bugs/${dataItem.id}`}>{dataItem.title}</Link>
                   )}
                 </TableCell>
                 <TableCell>
