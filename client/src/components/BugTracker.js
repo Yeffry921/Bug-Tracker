@@ -1,7 +1,9 @@
 import React, { useContext } from "react";
 import Stack from "@mui/material/Stack";
-import { Divider, Box } from "@mui/material";
-
+import { Box } from "@mui/material";
+import { Outlet, Route, Routes } from "react-router-dom";
+import Projects from "../pages/Projects";
+import { ProjectProvider } from "../context/project-context";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import NavPages from "../routes/NavPage";
@@ -10,13 +12,9 @@ const BugTracker = () => {
   return (
     <Box sx={{ height: "100%" }}>
       <Navbar />
-      <Stack
-        direction="row"
-        divider={<Divider orientation="vertical" />}
-        sx={{ height: "100%" }}
-      >
+      <Stack sx={{ display: "flex", flexDirection: 'row', height: '100%' }}>
         <Sidebar />
-          <NavPages />
+        <Outlet />
       </Stack>
     </Box>
   );
