@@ -5,6 +5,6 @@ export const mainNavbarItems = [
     id: 0,
     icon: <PeopleIcon />,
     label: "Projects",
-    route: "/projects",
+    route: "/home/projects",
   },
 ];
