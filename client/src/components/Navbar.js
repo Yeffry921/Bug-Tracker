@@ -48,14 +48,6 @@ const Navbar = () => {
         </Typography>
         <BugReportIcon sx={{ display: { xs: "block", sm: "none" } }} />
         <Icons>
-          <Badge badgeContent={4} color="error">
-            <MailIcon />
-          </Badge>
-
-          <Badge badgeContent={4} color="error">
-            <NotificationsIcon />
-          </Badge>
-
           <Avatar
             sx={{ width: 30, height: 30 }}
             onClick={() => setOpen(true)}
@@ -64,10 +56,10 @@ const Navbar = () => {
         <UserBox onClick={() => setOpen(true)}>
           <Avatar sx={{ width: 30, height: 30 }} />
           <Typography variant="span">John</Typography>
-        </UserBox> 
+        </UserBox>
       </StyledToolbar>
 
-      <Menu
+      {/* <Menu
         sx={{ marginTop: 5 }}
         id="demo-positioned-menu"
         aria-labelledby="demo-positioned-button"
@@ -85,7 +77,7 @@ const Navbar = () => {
         <MenuItem>Profile</MenuItem>
         <MenuItem>My account</MenuItem>
         <MenuItem>Logout</MenuItem>
-      </Menu>
+      </Menu> */}
     </AppBar>
   );
 };
