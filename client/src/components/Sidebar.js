@@ -11,7 +11,7 @@ import { NavLink } from "react-router-dom";
 
 const Sidebar = () => {
   return (
-    <Box bgcolor="#333" flex={1} sx={{ padding: "10px 0", height: '100%', flex: 1 }}>
+    <Box bgcolor="#444" sx={{ flexBasis: "0 0 10%" }}>
       <List>
         {mainNavbarItems.map((item, index) => (
           <NavLink to={item.route} style={{textDecoration: 'none'}} key={item.id}>
